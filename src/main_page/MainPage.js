@@ -11,6 +11,7 @@ export function MainPage() {
     const [patients, setPatients] = useState([]);
     const db = getDatabase();
     const patientsRef = ref(db, 'patients');
+    const treatmentsRef = ref(db, 'treatments');
     const [selectedPatient, setSelectedPatient] = useState(null);
 
 
@@ -22,7 +23,7 @@ export function MainPage() {
             <SearchPatients selectedPatient={selectedPatient} setSelectedPatient={setSelectedPatient}/>
 
             {selectedPatient &&
-                <PrescriptionPage patient={selectedPatient}/>
+                <PrescriptionPage patient={selectedPatient} patientsRef={db}/>
             }
             <button onClick={logOut}>Logout</button>
         </div>

@@ -31,28 +31,28 @@ import dayjs from "dayjs";
 const SensorType = ["Temperature", "Heart Rate", "Blood Pressure", "Oxygen Saturation"];
 const CompareType = ["Above","Below"];
 
-const DropRow = ({ card, updateMed, removeMed }) => {
+const DropRow = ({ med, updateMed, removeMed }) => {
 
-    const [quantity, setQuantity] = useState(0);
-    const [time, setTime] = useState(dayjs(Date.now()));
-    const [startDate, setStartDate] = useState(dayjs(Date.now()));
-    const [endDate, setEndDate] = useState(dayjs(Date.now()));
-    const [conditional, setConditional] = useState(false);
-    const [sensor, setSensor] = useState("");
-    const [sensorQuantity, setSensorQuantity] = useState("");
-    const [compare, setCompare] = useState("");
+    // const [quantity, setQuantity] = useState(0);
+    // const [time, setTime] = useState(dayjs(Date.now()));
+    // const [startDate, setStartDate] = useState(dayjs(Date.now()));
+    // const [endDate, setEndDate] = useState(dayjs(Date.now()));
+    // const [conditional, setConditional] = useState(false);
+    // const [sensor, setSensor] = useState("");
+    // const [sensorQuantity, setSensorQuantity] = useState("");
+    // const [compare, setCompare] = useState("");
 
     const [medData,setMedData] = useState({
-        id: card.id,
-        text: card.text,
-        quantity,
-        time,
-        startDate,
-        endDate,
-        conditional,
-        sensor,
-        sensorQuantity,
-        compare
+        id: med.id,
+        name: med.text,
+        quantity:0,
+        time: dayjs(Date.now()),
+        startDate: dayjs(Date.now()),
+        endDate: dayjs(Date.now()),
+        conditional: false,
+        sensor: "",
+        sensorQuantity: "",
+        compare: ""
     })
 
     useEffect(() => {
@@ -61,18 +61,64 @@ const DropRow = ({ card, updateMed, removeMed }) => {
     }, [medData]);
 
     const handleRemove = () => {
-        removeMed(card.id);
+        removeMed(med.id);
     }
     const handleSensorChange = (event) => {
-        setSensor(event.target.value);
+        setMedData(prevState => ({
+            ...prevState,
+            sensor: event.target.value
+        }))
     }
     const handleCompareChange = (event) => {
-        setCompare(event.target.value);
+        setMedData(prevState => ({
+            ...prevState,
+            compare: event.target.value
+        }))
     }
 
     const handleConditionalChange = (event) => {
-        setConditional(event.target.checked);
+        setMedData(prevState => ({
+            ...prevState,
+            conditional: !prevState.conditional
+        }))
     }
+
+    const handleQuantityChange = (newQuantity) => {
+        setMedData(prevState => ({
+            ...prevState,
+            quantity: Number(newQuantity)
+        }))
+    }
+
+    const handleSensorQuantityChange = (event) => {
+        setMedData(prevState => ({
+            ...prevState,
+            sensorQuantity: Number(event.target.value)
+        }))
+    }
+
+    const handleTimeChange = (newTime) => {
+        setMedData(prevState => ({
+            ...prevState,
+            time: newTime
+        }))
+    }
+
+    const handleStartDateChange = (newDate) => {
+        setMedData(prevState => ({
+            ...prevState,
+            startDate: newDate
+        }))
+    }
+
+    const handleEndDateChange = (newDate) => {
+        setMedData(prevState => ({
+            ...prevState,
+            endDate: newDate
+        }))
+    }
+
+    const {quantity, time, startDate, endDate, conditional, sensor, sensorQuantity, compare} = medData;
 
     return (
             <Box
@@ -82,7 +128,7 @@ const DropRow = ({ card, updateMed, removeMed }) => {
                     marginBottom: 2,
                 }}
             >
-                <Box sx={{ marginRight: 2 }}>{card.text}</Box>
+                <Box sx={{ marginRight: 2 }}>{med.text}</Box>
 
                 <ToggleButton
                     sx={{ marginRight: 2 }}
@@ -90,12 +136,12 @@ const DropRow = ({ card, updateMed, removeMed }) => {
                     size="large"
                     value = "conditional"
                     selected={conditional}
-                    onChange={() => { setConditional(!conditional); }}
+                    onChange={handleConditionalChange}
                 >
                     <CheckIcon />
                 </ToggleButton>
 
-                <QuantityPicker quantity={quantity} setQuantity={setQuantity} />
+                <QuantityPicker quantity={quantity} setQuantity={handleQuantityChange} />
 
                 {!conditional?
                     <DesktopTimePicker
@@ -104,7 +150,7 @@ const DropRow = ({ card, updateMed, removeMed }) => {
                         sx={{ marginRight: 2 }}
                         formatDensity={'spacious'}
                         value={time}
-                        onChange={(newTime) => (setTime(newTime))}
+                        onChange={handleTimeChange}
                     /> :
                     <>
                         <Select
@@ -132,7 +178,7 @@ const DropRow = ({ card, updateMed, removeMed }) => {
                         <TextField
                             type="number"
                             value={sensorQuantity}
-                            onChange={(e) => setSensorQuantity(Number(e.target.value))}
+                            onChange={handleSensorQuantityChange}
                             sx={{ marginRight: 2 }}
                             label="Quantity"
                             variant="outlined"
@@ -148,7 +194,7 @@ const DropRow = ({ card, updateMed, removeMed }) => {
                     value={startDate}
                     sx={{ marginRight: 2 }}
                     disablePast={true}
-                    onChange={(newValue) => setStartDate(newValue)}
+                    onChange={handleStartDateChange}
                     />
                 <DesktopDatePicker
                     label="End Treatment"
@@ -157,7 +203,7 @@ const DropRow = ({ card, updateMed, removeMed }) => {
                     minDate={startDate}
                     sx={{ marginRight: 2 }}
                     disablePast={true}
-                    onChange={(newValue) => setEndDate(newValue)}
+                    onChange={handleEndDateChange}
                 />
                 <IconButton color={"warning"} size={"small"} onClick={handleRemove}>
                     <ClearIcon aria-label="delete" />

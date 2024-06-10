@@ -3,31 +3,34 @@ import React, { useState } from 'react';
 import { useDrop } from 'react-dnd';
 import Card from './Card';
 import DropRow from "./PrescribedMed";
+import dayjs from "dayjs";
 
-const DropArea = () => {
-    const [cards, setCards] = useState([]);
+const DropArea = ({meds,setMeds}) => {
 
     const [, drop] = useDrop(() => ({
         accept: 'CARD',
-        drop: (item) => addCardToArea(item.id),
+        drop: (item) => addMedToArea(item.id),
     }));
 
-    const addCardToArea = (id) => {
-        setCards((prevCards) => [...prevCards, { id, text: `Card ${id}` }]);
+    const addMedToArea = (id) => {
+        setMeds((prevMeds) => [...prevMeds, { id, text: `Med ${id}` }]);
     };
 
-    const updateCard = (newCard) => {
-        setCards((prevCards) => prevCards.map((card) => {
-            if (card.id === newCard.id) {
-                return newCard;
+    const updateMed = (newMed) => {
+        setMeds((prevMeds) => prevMeds.map((med) => {
+            if (med.id === newMed.id) {
+                return {...newMed,
+                    time: dayjs(newMed.time).toISOString(),
+                    startDate: dayjs(newMed.startDate).toISOString(),
+                    endDate: dayjs(newMed.endDate).toISOString(),
+                };
             }
-            return card;
+            return med;
         }));
     };
 
     const removeMed = (id) => {
-        setCards((prevCards) => prevCards.filter((card) => card.id !== id));
-        // console.log(cards.filter((card) => card.id !== id));
+        setMeds((prevMeds) => prevMeds.filter((med) => med.id !== id));
     };
 
     return (
@@ -39,8 +42,8 @@ const DropArea = () => {
                 padding: '16px',
             }}
         >
-            {cards.map((card) => (
-                <DropRow key={card.id} card={card} updateMed={updateCard} removeMed={removeMed}/>
+            {meds.map((med) => (
+                <DropRow key={med.id} med={med} updateMed={updateMed} removeMed={removeMed}/>
             ))}
         </div>
     );
