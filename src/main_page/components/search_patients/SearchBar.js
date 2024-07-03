@@ -1,4 +1,3 @@
-// src/components/SearchBar.js
 import React, {useEffect, useState} from 'react';
 import {TextField, InputAdornment, IconButton} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';

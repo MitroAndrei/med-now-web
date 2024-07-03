@@ -1,31 +1,48 @@
 import useAuth from "../core/useAuth";
-import SearchBar from "./components/search_patients/SearchBar";
 import SearchPatients from "./components/search_patients/SearchPatients";
-import {getDatabase, onChildAdded, ref} from "firebase/database";
 import {useState} from "react";
 import PrescriptionPage from "./components/drag_and_drop/PrescriptionPage";
+import PatientPage from "./components/patient_page/PatientPage";
+import {Button} from "@mui/material";
 
 export function MainPage() {
 
-    const {user,logOut} = useAuth()
-    const [patients, setPatients] = useState([]);
-    const db = getDatabase();
-    const patientsRef = ref(db, 'patients');
-    const treatmentsRef = ref(db, 'treatments');
+    const {user, logOut} = useAuth()
     const [selectedPatient, setSelectedPatient] = useState(null);
+    const [showPrescription, setShowPrescription] = useState(false);
 
-
+    function changeView() {
+        setShowPrescription(!showPrescription);
+    }
 
     return (
-        <div>
-            <h1>Main Page</h1>
-            <h2>Welcome {user?.email}</h2>
-            <SearchPatients selectedPatient={selectedPatient} setSelectedPatient={setSelectedPatient}/>
+        <div style={{position: 'relative', padding: '20px'}}>
+            <Button
+                variant="contained"
+                color="error"
+                style={{position: 'absolute', top: '20px', right: '20px'}}
+                onClick={logOut}
+            >
+                Logout
+            </Button>
 
-            {selectedPatient &&
-                <PrescriptionPage patient={selectedPatient} patientsRef={db}/>
+
+            {selectedPatient ?
+                (showPrescription ?
+                        <PrescriptionPage patient={selectedPatient} changeView={changeView}/>
+                        :
+                        <>
+                            <h1 style={{margin: '20px 0'}}>Clinic Name</h1>
+                            <SearchPatients selectedPatient={selectedPatient} setSelectedPatient={setSelectedPatient}/>
+                            <PatientPage patient={selectedPatient} changeView={changeView}></PatientPage>)
+                        </>
+                ) : (
+                    <>
+                        <h1 style={{margin: '20px 0'}}>Clinic Name</h1>
+                        <SearchPatients selectedPatient={selectedPatient} setSelectedPatient={setSelectedPatient}/>
+                    </>
+                )
             }
-            <button onClick={logOut}>Logout</button>
         </div>
     )
 }

@@ -1,18 +1,15 @@
-import logo from './logo.svg';
 import './App.css';
-import {BrowserRouter, Route, Routes, Navigate} from "react-router-dom";
-import {auth} from "./core/firebase";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 import useAuth from "./core/useAuth";
 import CustomRoute from "./core/CustomRoutes";
 import {MainPage} from "./main_page/MainPage";
-import {LoginPage} from "./LoginPage";
-import {useState} from "react";
+import {LoginPage} from "./core/LoginPage";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {LocalizationProvider} from "@mui/x-date-pickers";
-import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 
 function App() {
 
+    const {user} = useAuth();
 
     return (
         <div className="App">
@@ -20,9 +17,9 @@ function App() {
                 <BrowserRouter>
                     <Routes>
                         <Route path="/login" element={<LoginPage/>}/>
-                        {/*<Route element={<CustomRoute />}>*/}
-                        <Route path="/" element={<MainPage/>}/>
-                        {/*</Route>*/}
+                        <Route element={<CustomRoute user={user}/>}>
+                            <Route path="/" element={<MainPage/>}/>
+                        </Route>
                     </Routes>
                 </BrowserRouter>
             </LocalizationProvider>

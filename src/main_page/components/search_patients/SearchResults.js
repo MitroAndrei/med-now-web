@@ -1,4 +1,3 @@
-// src/components/SearchResults.js
 import React from 'react';
 import { List, ListItem, ListItemText, Paper } from '@mui/material';
 import {Patient} from "./Patient";

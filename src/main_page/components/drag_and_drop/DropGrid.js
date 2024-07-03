@@ -1,7 +1,5 @@
-// DropArea.js
-import React, { useState } from 'react';
+import React from 'react';
 import { useDrop } from 'react-dnd';
-import Card from './Card';
 import DropRow from "./PrescribedMed";
 import dayjs from "dayjs";
 
@@ -9,11 +7,13 @@ const DropArea = ({meds,setMeds}) => {
 
     const [, drop] = useDrop(() => ({
         accept: 'CARD',
-        drop: (item) => addMedToArea(item.id),
+        drop: (item) => addMedToArea(item),
     }));
 
-    const addMedToArea = (id) => {
-        setMeds((prevMeds) => [...prevMeds, { id, text: `Med ${id}` }]);
+    const addMedToArea = (item) => {
+        console.log("Adding med to area")
+        console.log(item)
+        setMeds((prevMeds) => [...prevMeds, { id:item.id, text: item.text }]);
     };
 
     const updateMed = (newMed) => {
@@ -38,7 +38,7 @@ const DropArea = ({meds,setMeds}) => {
             ref={drop}
             style={{
                 minHeight: '200px',
-                backgroundColor: 'lightblue',
+                backgroundColor: '#c1e9ff',
                 padding: '16px',
             }}
         >

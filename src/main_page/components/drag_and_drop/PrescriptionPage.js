@@ -1,23 +1,48 @@
 // App.js
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';
 import MedsGrid from "./MedsGrid";
 import DropArea from "./DropGrid";
 import {Button} from "@mui/material";
 
-import {ref, set, push, getDatabase} from "firebase/database";
-const PrescriptionPage = ({patient, db}) => {
-    const cards = [
-        {id: 1, text: 'Card 1'},
-        {id: 2, text: 'Card 2'},
-        {id: 3, text: 'Card 3'},
-        {id: 4, text: 'Card 4'},
-        {id: 5, text: 'Card 5'},
+import {ref, set, push, getDatabase, onChildAdded, off} from "firebase/database";
+const PrescriptionPage = ({patient, changeView}) => {
+    const [cards,setCards] = useState([
+        {id: "1", text: 'Card 1'},
+        {id: "2", text: 'Card 2'},
+        {id: "3", text: 'Card 3'},
+        {id: "4", text: 'Card 4'},
+        {id: "5", text: 'Card 5'},
+    ]);
 
-    ];
+    const [originalCards,setOriginalCards] = useState(cards);
 
     const [meds,setMeds] = useState([]);
+
+    useEffect(() => {
+        const db = getDatabase();
+        const medicamentsRef = ref(db,`medicaments`);
+
+        const handleAdd = (snapshot) => {
+            const medicament = snapshot.val();
+            setCards(prev => [...prev, {id: snapshot.key, text: medicament.name}]);
+            setOriginalCards(prev => [...prev, {id: snapshot.key, text: medicament.name}])
+        };
+
+        onChildAdded(medicamentsRef, handleAdd);
+        return () => {
+            off(medicamentsRef, 'child_added', handleAdd);
+        };
+
+    }, []);
+
+    const handleSearch = (searchTerm) => {
+        const results = originalCards.filter((card) =>
+            card.text.toLowerCase().startsWith(searchTerm.toLowerCase()));
+        console.log(results)
+        setCards(results);
+    }
 
     const handleSave = () => {
 
@@ -49,16 +74,28 @@ const PrescriptionPage = ({patient, db}) => {
                 console.error("Error writing document: ", error);
             });
         })
-        // set(newTreatmentRef, meds).catch((error) => {
-        //     console.error("Error writing document: ", error);
-        // });
+        changeView();
     }
 
     return (
         <>
             <div>
                 <h1>Prescription for {patient.firstName}</h1>
-                <Button onClick={handleSave}> Export</Button>
+                <Button
+                    variant="contained"
+                    color="success"
+                    style={{ marginRight: '8px' }}
+                    onClick={handleSave}
+                >
+                    Export
+                </Button>
+                <Button
+                    variant="contained"
+                    color="error"
+                    onClick={changeView}
+                >
+                    Cancel
+                </Button>
             </div>
             <DndProvider backend={HTML5Backend}>
                 <div style={{display: 'flex', height: '100vh'}}>
@@ -66,7 +103,7 @@ const PrescriptionPage = ({patient, db}) => {
                         <DropArea meds={meds} setMeds={setMeds}/>
                     </div>
                     <div style={{flex: 1, padding: '16px'}}>
-                        <MedsGrid cards={cards}/>
+                        <MedsGrid cards={cards} handleSearch={handleSearch}/>
                     </div>
                 </div>
             </DndProvider>

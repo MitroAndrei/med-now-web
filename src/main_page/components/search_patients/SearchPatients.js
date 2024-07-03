@@ -1,9 +1,7 @@
-// src/App.js
 import React, {useEffect, useState} from 'react';
 import SearchBar from "./SearchBar";
 import SearchResults from "./SearchResults";
-import { getDatabase, ref, onValue, get,onChildAdded, off,query,limitToLast } from "firebase/database";
-import {logDOM} from "@testing-library/react";
+import { getDatabase, ref, onChildAdded, off } from "firebase/database";
 
 const SearchPatients = ({selectedPatient, setSelectedPatient}) => {
     const [results, setResults] = useState([]);
@@ -21,7 +19,6 @@ const SearchPatients = ({selectedPatient, setSelectedPatient}) => {
 
         onChildAdded(patientsRef, handleNewPatient);
 
-        // Cleanup listener on component unmount
         return () => {
             off(patientsRef, 'child_added', handleNewPatient);
         };
@@ -37,7 +34,7 @@ const SearchPatients = ({selectedPatient, setSelectedPatient}) => {
 
     const handleSelect = (item) => {
         setSelectedPatient(item);
-        setResults([]); // Clear results after selection
+        setResults([]);
     };
 
     return (

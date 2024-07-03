@@ -12,16 +12,10 @@ import {
 
 import CheckIcon from '@mui/icons-material/Check';
 import IconButton from '@mui/material/IconButton';
-// DropRow.js
 import React, {useEffect, useState} from 'react';
-
-// DropRow.js
 import {
-    Button,
     Box,
 } from '@mui/material';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {DesktopDatePicker, DesktopTimePicker, DigitalClock, LocalizationProvider} from "@mui/x-date-pickers";
 import ClearIcon from '@mui/icons-material/Clear';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -33,14 +27,9 @@ const CompareType = ["Above","Below"];
 
 const DropRow = ({ med, updateMed, removeMed }) => {
 
-    // const [quantity, setQuantity] = useState(0);
-    // const [time, setTime] = useState(dayjs(Date.now()));
-    // const [startDate, setStartDate] = useState(dayjs(Date.now()));
-    // const [endDate, setEndDate] = useState(dayjs(Date.now()));
-    // const [conditional, setConditional] = useState(false);
-    // const [sensor, setSensor] = useState("");
-    // const [sensorQuantity, setSensorQuantity] = useState("");
-    // const [compare, setCompare] = useState("");
+    useEffect(() => {
+        console.log(med)
+    }, [med]);
 
     const [medData,setMedData] = useState({
         id: med.id,
@@ -51,7 +40,7 @@ const DropRow = ({ med, updateMed, removeMed }) => {
         endDate: dayjs(Date.now()),
         conditional: false,
         sensor: "",
-        sensorQuantity: "",
+        sensorQuantity: 0,
         compare: ""
     })
 
@@ -128,7 +117,7 @@ const DropRow = ({ med, updateMed, removeMed }) => {
                     marginBottom: 2,
                 }}
             >
-                <Box sx={{ marginRight: 2 }}>{med.text}</Box>
+                <Box sx={{ marginRight: 2 }}>{medData.name}</Box>
 
                 <ToggleButton
                     sx={{ marginRight: 2 }}
