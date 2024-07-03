@@ -8,13 +8,7 @@ import {Button} from "@mui/material";
 
 import {ref, set, push, getDatabase, onChildAdded, off} from "firebase/database";
 const PrescriptionPage = ({patient, changeView}) => {
-    const [cards,setCards] = useState([
-        {id: "1", text: 'Card 1'},
-        {id: "2", text: 'Card 2'},
-        {id: "3", text: 'Card 3'},
-        {id: "4", text: 'Card 4'},
-        {id: "5", text: 'Card 5'},
-    ]);
+    const [cards,setCards] = useState([]);
 
     const [originalCards,setOriginalCards] = useState(cards);
 
